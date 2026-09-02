@@ -10,7 +10,7 @@ enum tok_t{
 	LINE_END,
 	FILE_END,
 };
-union tok_t{
+union tok_d{
 	int int_litteral;
 	float float_litteral;
 	char * string_litteral;
