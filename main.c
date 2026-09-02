@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
-        printf("too less arguments provided");
+        printf("too less arguments provided\n");
 
         exit(EXIT_FAILURE);
     }
