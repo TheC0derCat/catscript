@@ -2,7 +2,6 @@
 #include <stdlib.h>
 
 #include "compile.h"
-#include "lexer.h"
 
 #include "compile.c"
 #include "lexer.c"
