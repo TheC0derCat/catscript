@@ -1,10 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "compile.h"
 #include "lexer.h"
 
+#include "compile.c"
 #include "lexer.c"
 
 int main(int argc, char *argv[])
 {
-    const char *source_code = "int x = 1;";
+    if (argc < 2) {
+        printf("too less arguments provided");
 
-    lex(source_code);
+        exit(EXIT_FAILURE);
+    }
+
+    for (char **arg = argv; arg != (argv + argc); ++arg) {
+        compile(*arg);
+    }
 }
