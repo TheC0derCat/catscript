@@ -18,7 +18,7 @@ union tok_d{
 };
 struct tok{
 	enum tok_t type;
-	union tok_t data;
+	union tok_d data;
 };
 
 void lex(const char *source_code, size_t len);
