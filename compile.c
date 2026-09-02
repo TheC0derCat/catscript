@@ -3,15 +3,15 @@
 #include <stddef.h>
 #include <stdio.h>
 
-void read_file(const char *filepath, void (*receiver)(const char *source_code));
-void receive_source_code(const char *source_code);
+void read_file(const char *filepath, void (*receiver)(const char *source_code, size_t len));
+void receive_source_code(const char *source_code, size_t len);
 
 void compile(const char *filepath)
 {
     read_file(filepath, receive_source_code);
 }
 
-void read_file(const char *filepath, void (*receiver)(const char *source_code))
+void read_file(const char *filepath, void (*receiver)(const char *source_code, size_t len))
 {
     FILE *file = fopen(filepath, "r");
 
@@ -21,12 +21,12 @@ void read_file(const char *filepath, void (*receiver)(const char *source_code))
 
     fread(source_code, element_size, max_source_file_size, file);
 
-    receiver(source_code);
+    receiver(source_code, max_source_file_size);
 
     fclose(file);
 }
 
-void receive_source_code(const char *source_code)
+void receive_source_code(const char *source_code, size_t len)
 {
-    lex(source_code);
+    lex(source_code, len);
 }
