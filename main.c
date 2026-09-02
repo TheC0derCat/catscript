@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    for (char **arg = argv; arg != (argv + argc); ++arg) {
+    for (char **arg = argv + 1; arg != (argv + argc); ++arg) {
         compile(*arg);
     }
 }
