@@ -1,15 +1,25 @@
 #include "lex.h"
 #include <memory.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-void add_token(struct token_stream *token_stream, char *from, size_t len);
+void add_token(struct token_stream *token_stream, const char *from, size_t len);
 
 struct token_stream lex(const char *source_code, size_t len)
 {
-    struct token_stream stream;
+    static const size_t start_len = 500;
+    struct token_stream stream = {
+        .len = start_len,
+        .capacity = start_len,
+        .tokens = malloc(sizeof(struct token) * start_len),
+    };
+
+    const char *last = NULL;
+    size_t last_len = 0;
+    bool set_last = true;
 
     printf("lexing %s", source_code);
 
@@ -17,8 +27,17 @@ struct token_stream lex(const char *source_code, size_t len)
         ++source_char) {
         switch (*source_char) {
         case ' ':
+            add_token(&stream, last, last_len);
+            last_len = 0;
+            set_last = true;
             break;
         default:
+            if (set_last) {
+                last = source_char;
+            }
+
+            ++last_len;
+            set_last = false;
             break;
         }
     }
@@ -27,16 +46,16 @@ struct token_stream lex(const char *source_code, size_t len)
 }
 
 static void push_token(struct token_stream *token_stream, struct token token);
-static struct token create_token(char *from, size_t len);
+static struct token create_token(const char *from, size_t len);
 
-void add_token(struct token_stream *token_stream, char *from, size_t len)
+void add_token(struct token_stream *token_stream, const char *from, size_t len)
 {
     struct token new_token = create_token(from, len);
 
     push_token(token_stream, new_token);
 }
 
-static struct token create_token(char *from, size_t len)
+static struct token create_token(const char *from, size_t len)
 {
     const char *assignment = "=";
 
@@ -55,7 +74,7 @@ static struct token create_token(char *from, size_t len)
 
 static void push_token(struct token_stream *token_stream, struct token token)
 {
-    token_stream->len++;
+    ++(token_stream->len);
 
     if (token_stream->capacity < token_stream->len) {
         token_stream->capacity *= 2;
