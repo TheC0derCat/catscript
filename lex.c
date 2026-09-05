@@ -26,7 +26,34 @@ struct token_stream lex(const char *source_code, size_t len)
     return stream;
 }
 
-void push_token(struct token_stream *token_stream, struct token *token)
+static void push_token(struct token_stream *token_stream, struct token token);
+static struct token create_token(char *from, size_t len);
+
+void add_token(struct token_stream *token_stream, char *from, size_t len)
+{
+    struct token new_token = create_token(from, len);
+
+    push_token(token_stream, new_token);
+}
+
+static struct token create_token(char *from, size_t len)
+{
+    const char *assignment = "=";
+
+    if (strncmp(from, assignment, len | strlen(assignment))) {
+        union token_storage token_storage = { .none = NULL };
+        struct token new_token = { .kind = ASSIGNMENT, .storage = token_storage };
+
+        return new_token;
+    }
+
+    union token_storage token_storage = { .identifier = NULL };
+    struct token new_token = { .kind = IDENTIFIER, .storage = token_storage };
+
+    return new_token;
+}
+
+static void push_token(struct token_stream *token_stream, struct token token)
 {
     token_stream->len++;
 
@@ -36,10 +63,5 @@ void push_token(struct token_stream *token_stream, struct token *token)
     }
 
     struct token *target = token_stream->tokens + token_stream->len - 1;
-    memcpy(target, token, sizeof(struct token));
-}
-
-void add_token(struct token_stream *token_stream, char *from, size_t len)
-{
-    // push(token_stream, from);
+    memcpy(target, &token, sizeof(struct token));
 }
