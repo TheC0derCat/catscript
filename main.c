@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +12,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    for (char **arg = argv + 1; arg != (argv + argc); ++arg) {
-        compile(*arg);
+    for (size_t i = 1; i < argc; ++i) {
+        compile(argv[i]);
     }
 }

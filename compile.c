@@ -1,5 +1,4 @@
 #include "compile.h"
-#include "lex.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -19,12 +18,13 @@ void read_file(const char *filepath, void (*receiver)(const char *source_code, s
 
     size_t max_source_file_size = 100;
     char source_code[max_source_file_size] = { };
-    size_t element_size = sizeof(source_code[0]);
+    size_t element_size = sizeof(char);
 
-    fread(source_code, element_size, max_source_file_size, file);
+    size_t target_len = fread(source_code, element_size, max_source_file_size, file);
 
     printf("read '%s' with content %s\n", filepath, source_code);
 
+    printf("receive source_code\n");
     receiver(source_code, max_source_file_size);
 
     fclose(file);
@@ -32,5 +32,5 @@ void read_file(const char *filepath, void (*receiver)(const char *source_code, s
 
 void receive_source_code(const char *source_code, size_t len)
 {
-    lex(source_code, len);
+    // lex(source_code, len);
 }
