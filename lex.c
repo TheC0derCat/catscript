@@ -1,9 +1,12 @@
-#include "lex.h"
-#include <memory.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include"lex.h"
+#include<memory.h>
+#include<stddef.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+
+#define DEFLEN 50;
 
 void add_token(struct token_stream *token_stream, char *from, size_t len);
 
@@ -13,13 +16,38 @@ struct token_stream lex(const char *source_code, size_t len)
 
     printf("lexing %s", source_code);
 
-    for (const char *source_char = source_code; source_char != source_code + len;
-        ++source_char) {
+    for (const char *source_char = source_code; source_char != source_code + len; ++source_char) {
+        struct token next_tok;
+        if(isalpha(*source_char)){
+            char * buf = malloc(DEFLEN * sizeof(char));
+            int buflen = 0;
+            while(isalpha(*source_char)){
+                buf[buflen++] = *source_char;
+                ++source_char;
+            }
+            buf[buflen] = '\0';
+            next_tok.kind = IDENTIFIER;
+            next_tok.storage.identifier = buf;
+        }
+        if(isdigit(*source_char)){
+            char * buf = malloc(DEFLEN * sizeof(char));
+            int buflen = 0;
+            while(isdigit(*source_char)){
+                buf[buflen++] = *source_char;
+                ++source_char;
+            }
+            buf[buflen] = '\0';
+            next_tok.kind = INT_LITERAL;
+            next_tok.storage.int_literal = buf;
+        }
         switch (*source_char) {
-        case ' ':
-            break;
-        default:
-            break;
+            case '=':
+                next_tok.kind = ASSIGNMENT;
+                break;
+            case ' ':
+                break;
+            default:
+                break;
         }
     }
 
